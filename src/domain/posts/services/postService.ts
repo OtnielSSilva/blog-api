@@ -14,3 +14,14 @@ export const createPost = async (id: string, title: string, content: string) => 
   const db = await openDatabase();
   await db.run('INSERT INTO posts (id, title, content) VALUES (?, ?, ?)', [id, title, content]);
 };
+
+export async function likePost(id: string): Promise<void> {
+  const db = await openDatabase();
+  await db.run(`UPDATE posts SET likes = likes + 1 WHERE id = ?`, [id]);
+}
+
+export async function getPostLikes(id: string): Promise<number> {
+  const db = await openDatabase();
+  const result = await db.get(`SELECT likes FROM posts WHERE id = ?`, [id]);
+  return result?.likes || 0;
+}

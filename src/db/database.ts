@@ -11,13 +11,14 @@ export async function openDatabase(): Promise<Database<sqlite3.Database, sqlite3
 }
 
 // Função para criar as tabelas se elas ainda não existirem
-export async function createTables(): Promise<void> {
+export async function createTables() {
   const db = await openDatabase();
   await db.exec(`
     CREATE TABLE IF NOT EXISTS posts (
       id TEXT PRIMARY KEY,
       title TEXT,
-      content TEXT
+      content TEXT,
+      likes INTEGER DEFAULT 0
     );
   `);
   await db.exec(`
@@ -25,6 +26,7 @@ export async function createTables(): Promise<void> {
       id TEXT PRIMARY KEY,
       postId TEXT,
       content TEXT,
+      likes INTEGER DEFAULT 0,
       FOREIGN KEY(postId) REFERENCES posts(id)
     );
   `);

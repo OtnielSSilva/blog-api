@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as commentService from '../services/commentService';
 import { v4 as uuidv4 } from 'uuid';
+import { getCommentLikes, likeComment } from '../services/commentService';
 
 export const addComment = async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -28,3 +29,19 @@ export const getComments = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to fetch comments' });
   }
 };
+
+export async function likeCommentById(req: Request, res: Response): Promise<void> {
+  const { id } = req.params;
+
+  await likeComment(id);
+
+  const likes = await getCommentLikes(id);
+  res.json({ likes });
+}
+
+export async function getCommentLikesById(req: Request, res: Response): Promise<void> {
+  const { id } = req.params;
+
+  const likes = await getCommentLikes(id);
+  res.json({ likes });
+}

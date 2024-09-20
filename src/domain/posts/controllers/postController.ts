@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
 import * as postService from '../services/postService';
 import { v4 as uuidv4 } from 'uuid';
+import { getPostLikes, likePost } from '../services/postService';
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
@@ -35,3 +36,19 @@ export const createPost = async (req: Request, res: Response) => {
     res.status(500).json({ error: 'Failed to create post' });
   }
 };
+
+export async function likePostById(req: Request, res: Response): Promise<void> {
+  const { id } = req.params;
+
+  await likePost(id);
+
+  const likes = await getPostLikes(id);
+  res.json({ likes });
+}
+
+export async function getPostLikesById(req: Request, res: Response): Promise<void> {
+  const { id } = req.params;
+
+  const likes = await getPostLikes(id);
+  res.json({ likes });
+}
