@@ -1,7 +1,6 @@
 import { Request, Response } from 'express';
 import * as postService from '../services/postService';
 import { v4 as uuidv4 } from 'uuid';
-import { getPostLikes, likePost } from '../services/postService';
 
 export const getPosts = async (req: Request, res: Response) => {
   try {
@@ -37,18 +36,20 @@ export const createPost = async (req: Request, res: Response) => {
   }
 };
 
-export async function likePostById(req: Request, res: Response): Promise<void> {
+export const likePostById = async (req: Request, res: Response) =>
+{
   const { id } = req.params;
 
-  await likePost(id);
+  await postService.likePost(id);
 
-  const likes = await getPostLikes(id);
+  const likes = await postService.getPostLikes(id);
   res.json({ likes });
 }
 
-export async function getPostLikesById(req: Request, res: Response): Promise<void> {
+export const getPostLikesById = async (req: Request, res: Response) =>
+{
   const { id } = req.params;
 
-  const likes = await getPostLikes(id);
+  const likes = await postService.getPostLikes(id);
   res.json({ likes });
 }

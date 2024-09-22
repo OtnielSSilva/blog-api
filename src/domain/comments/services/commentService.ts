@@ -15,12 +15,14 @@ export const getCommentsByPostId = async (postId: string) => {
   return db.all('SELECT * FROM comments WHERE postId = ?', postId);
 };
 
-export async function likeComment(id: string): Promise<void> {
+export const likeComment = async(id: string) => 
+{
   const db = await openDatabase();
   await db.run(`UPDATE comments SET likes = likes + 1 WHERE id = ?`, [id]);
 }
 
-export async function getCommentLikes(id: string): Promise<number> {
+export const getCommentLikes = async ( id: string) =>
+{
   const db = await openDatabase();
   const result = await db.get(`SELECT likes FROM comments WHERE id = ?`, [id]);
   return result?.likes || 0;
