@@ -1,19 +1,21 @@
-import sqlite3 from 'sqlite3';
-import { open, Database } from 'sqlite';
-import { open as openDb } from 'sqlite';
+import sqlite3 from "sqlite3";
+import { open, Database } from "sqlite";
+import { open as openDb } from "sqlite";
 
 // Função para abrir o banco de dados
-export async function openDatabase(): Promise<Database<sqlite3.Database, sqlite3.Statement>> {
-  return openDb({
-    filename: './blog.db',
-    driver: sqlite3.Database,
-  });
+export async function openDatabase(): Promise<
+	Database<sqlite3.Database, sqlite3.Statement>
+> {
+	return openDb({
+		filename: "./blog.db",
+		driver: sqlite3.Database,
+	});
 }
 
 // Função para criar as tabelas se elas ainda não existirem
 export async function createTables() {
-  const db = await openDatabase();
-  await db.exec(`
+	const db = await openDatabase();
+	await db.exec(`
     CREATE TABLE IF NOT EXISTS posts (
       id TEXT PRIMARY KEY,
       title TEXT,
@@ -21,13 +23,27 @@ export async function createTables() {
       likes INTEGER DEFAULT 0
     );
   `);
-  await db.exec(`
+	await db.exec(`
     CREATE TABLE IF NOT EXISTS comments (
       id TEXT PRIMARY KEY,
       postId TEXT,
       content TEXT,
       likes INTEGER DEFAULT 0,
       FOREIGN KEY(postId) REFERENCES posts(id)
+    );
+  `);
+	await db.exec(`
+    CREATE TABLE IF NOT EXISTS post_likes (
+    user_id TEXT,
+    post_id TEXT,
+    PRIMARY KEY (user_id, post_id)
+    );
+  `);
+	await db.exec(`
+    CREATE TABLE IF NOT EXISTS comment_likes (
+    user_id TEXT,
+    comment_id TEXT,
+    PRIMARY KEY (user_id, comment_id)
     );
   `);
 }
